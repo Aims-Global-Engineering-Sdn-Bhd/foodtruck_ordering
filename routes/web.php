@@ -8,12 +8,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/menu', [MenuController::class, 'guestIndex'])->name('menu.list');
+Route::get('/cart', function() {
+    return view('guest.cart');
+})->name('guest.cart');
+
+Route::get('order/{orderId}', function ($orderId) {
+    return view('guest.order', ['orderId' => $orderId]);
+})->name('guest.order');
+
+
+Route::get('/test-session', function () {
+    return session()->getId();
+});
+
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-//Route for Customer components
-//Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
@@ -54,6 +67,4 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/menu/{menu}/edit', [MenuController::class, 'edit'])->name('menu.edit');
     Route::put('/menu/{menu}', [MenuController::class, 'update'])->name('menu.update');
     Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
-
-    //Route::get('/{page}', [PageController::class, 'index'])->name('page');
 });

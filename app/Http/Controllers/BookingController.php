@@ -13,7 +13,9 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $cartItems = Booking::with('menu')->latest()->get();
+
+        return view('guess.cart', compact('cartItems'));
     }
 
     /**

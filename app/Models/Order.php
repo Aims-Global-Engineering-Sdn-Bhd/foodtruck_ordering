@@ -11,7 +11,8 @@ class Order extends Model
         'total_amount',
         'status',
         'pickup_time',
-        'remarks'
+        'remarks',
+        'customer_name'
     ];
 
     public function bookings()

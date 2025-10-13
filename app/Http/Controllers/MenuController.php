@@ -57,7 +57,8 @@ class MenuController extends Controller
 
         if ($request->hasFile('url_food')){
             $file = $request->file('url_food');
-            $filename = date('Ymd_His') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $originalName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+            $filename = date('Ymd_His') . '_' . $originalName;
             $destination = public_path('uploads/menus');
 
             // Create directory if not exist
@@ -110,7 +111,8 @@ class MenuController extends Controller
 
         if ($request->hasFile('url_food')) {
             $file = $request->file('url_food');
-            $filename = date('Ymd_His') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $originalName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+            $filename = date('Ymd_His') . '_' . $originalName;
             $destination = public_path('uploads/menus');
 
             // Create directory if not exist
@@ -133,7 +135,7 @@ class MenuController extends Controller
             $validated['url_food'] = $menu->url_food;
         }
 
-        // 🟩 Update the record
+        // Update the record
         $menu->update($validated);
 
         return redirect()->route('menu.show', $menu)
@@ -149,4 +151,12 @@ class MenuController extends Controller
 
         return redirect()->route('menu.index')->with('success','Menu deleted successfully');
     }
+
+    public function guestIndex()
+    {
+        $menus = Menu::where('avail_status', 1)->get();
+
+        return view('guest.index', compact('menus'));
+    }
+
 }
