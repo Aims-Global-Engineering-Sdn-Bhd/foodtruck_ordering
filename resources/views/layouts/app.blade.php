@@ -77,6 +77,34 @@
 <!-- Argon Dashboard JS -->
 <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
 
+{{-- ✅ DataTables Integration --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Automatically apply DataTable to all tables with class "datatable"
+        $('.datatable').DataTable({
+            pageLength: 10,
+            lengthChange: true,
+            ordering: true,
+            searching: true,
+            language: {
+                search: "Search:",
+                lengthMenu: "Show _MENU_ entries per page",
+                zeroRecords: "No matching records found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No data available",
+                infoFiltered: "(filtered from _MAX_ total records)"
+            }
+        });
+    });
+</script>
+
+
 @stack('js')
 @livewireScripts
 

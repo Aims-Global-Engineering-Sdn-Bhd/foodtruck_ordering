@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Livewire\OrderReceiver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -69,7 +70,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/menu/{menu}', [MenuController::class, 'update'])->name('menu.update');
     Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
 
-    //Route for Order
+    //Route for Order (Admin)
+    Route::get('/order-list', [OrderController::class ,'index'])->name('order.index');
+    Route::get('/order-list/{id}', [OrderController::class, 'show'])->name('order.show');
+
+    //Route for Order (Cashier)
     Route::get('/cashier/orders', function() {
         return view('cashier.order');
     })->name('cashier.order');

@@ -13,7 +13,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::all();
+
+        return view('order.index', compact('orders'));
     }
 
     /**
@@ -35,9 +37,11 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        $order = Order::with('bookings.menu')->findOrFail($id);
+
+        return view('order.show', compact('order'));
     }
 
     /**
