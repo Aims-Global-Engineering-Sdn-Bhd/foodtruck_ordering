@@ -35,7 +35,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{{ route('menu.list') }}">
-            <span class="t-style">T</span> Kafe
+            <span class="t-style">T</span>KCafe
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarGuest"

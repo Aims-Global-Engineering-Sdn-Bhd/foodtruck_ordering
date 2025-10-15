@@ -33,7 +33,9 @@ class MenuController extends Controller
             "ALA CARTE LOKCING",
             "ALA CARTE WESTERN (SIDE DISH)",
             "BEVERAGE",
-            "DRINKS (SOFT DRINKS)"
+            "DRINKS (SOFT DRINKS)",
+            "DRINKS (HOT DRINKS)",
+            "BEST SELLER",
         ];
 
 

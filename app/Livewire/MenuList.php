@@ -21,10 +21,26 @@ class MenuList extends Component
         $this->categories = Menu::select('category')->distinct()->pluck('category');
     }
 
+    public function loadMenus(){
+        $query = Menu::query();
+
+        if($this->selectedCategory){
+            $query->where('category', $this->selectedCategory);
+        }
+
+        $this->menus = $query->orderBy('category')->get();
+        $this->categories = Menu::select('category')->distinct()->pluck('category');
+        $this->cartCount = count(session()->get('cart', []));
+    }
+
+    public function refreshMenus(){
+        $this->loadMenus();
+    }
+
     public function filterCategory($category)
     {
         $this->selectedCategory = $category;
-        $this->menus = $category ? Menu::where('category', $category)->get() : Menu::all();
+        $this->loadMenus();
     }
 
     public function addToCart($menuId)

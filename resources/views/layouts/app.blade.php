@@ -23,6 +23,8 @@
 
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+
+    @livewireStyles
 </head>
 
 <body class="{{ $class ?? '' }}">
@@ -51,9 +53,9 @@
             @yield('content')
         </main>
 
-        @include('components.fixed-plugin')
     @endif
 @endauth
+
 
 <!--   Core JS Files   -->
 <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
@@ -76,6 +78,9 @@
 <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
 
 @stack('js')
+@livewireScripts
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
