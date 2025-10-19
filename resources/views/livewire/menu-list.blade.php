@@ -1,97 +1,129 @@
-<div wire:poll.10s="refreshMenus">
-    {{-- Restaurant Banner --}}
-    {{--<div class="card border-0 shadow-sm mb-4">
-        <img src="{{ asset('img/backgroundtkcafe.jpg') }}" class="card-img-top rounded-3" alt="Restaurant Banner">
-    </div>--}}
-
-    {{-- Category Filter Buttons --}}
-    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-        <button wire:click="filterCategory(null)"
-                class="btn btn-sm px-3 {{ $selectedCategory === null ? 'btn-primary' : 'btn-outline-primary' }}">
-            All
-        </button>
-
-        @foreach($categories as $category)
-            <button wire:click="filterCategory('{{ $category }}')"
-                    class="btn btn-sm px-3 {{ $selectedCategory === $category ? 'btn-primary' : 'btn-outline-primary' }}">
-                {{ strtoupper($category) }}
+<div>
+    <div wire:poll.10s="refreshMenus">
+        {{-- Category Filter Buttons --}}
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+            <button wire:click="filterCategory(null)"
+                    class="btn btn-sm px-3 {{ $selectedCategory === null ? 'btn-primary' : 'btn-outline-primary' }}">
+                All
             </button>
-        @endforeach
-    </div>
 
-    {{-- Menu List --}}
-    @foreach($groupedMenus as $category => $items)
-        <div class="mb-5">
-            <div class="card border-0 shadow-sm mb-3 bg-light">
-                <div class="card-body py-2">
-                    <h5 class="fw-bold text-primary mb-0">{{ strtoupper($category) }}</h5>
+            @foreach($categories as $category)
+                <button wire:click="filterCategory('{{ $category }}')"
+                        class="btn btn-sm px-3 {{ $selectedCategory === $category ? 'btn-primary' : 'btn-outline-primary' }}">
+                    {{ strtoupper($category) }}
+                </button>
+            @endforeach
+        </div>
+
+        {{-- Menu List --}}
+        @foreach($groupedMenus as $category => $items)
+            <div class="mb-5">
+                <div class="card border-0 shadow-sm mb-3 bg-light">
+                    <div class="card-body py-2">
+                        <h5 class="fw-bold text-primary mb-0">{{ strtoupper($category) }}</h5>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row g-3">
-                @foreach($items as $menu)
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card shadow-sm border-0 h-100 {{ $menu->avail_status ? '' : 'opacity-50 position-relative' }}">
+                <div class="row g-3">
+                    @foreach($items as $menu)
+                        <div class="col-md-4 col-sm-6">
+                            <div class="card shadow-sm border-0 h-100 {{ $menu->avail_status ? '' : 'opacity-50 position-relative' }}">
+                                {{-- Out of Stock Overlay --}}
+                                @if(!$menu->avail_status)
+                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger bg-opacity-75 text-white px-3 py-1 rounded">
+                                        <span>Out Of Stock</span>
+                                    </div>
+                                @endif
 
-                            {{-- Unavailable overlay --}}
-                            @if(!$menu->avail_status)
-                                <div class="position-absolute top-50 start-50 translate-middle bg-danger bg-opacity-75 text-white px-3 py-1 rounded">
-                                    <span>Out Of Stock</span>
-                                </div>
-                            @endif
+                                {{-- Menu Image --}}
+                                @if($menu->url_food)
+                                    <img src="{{ asset($menu->url_food) }}"
+                                         alt="{{ $menu->name }}"
+                                         class="card-img rounded-top"
+                                         style="max-height: 250px; object-fit: cover; width: 100%;">
+                                @else
+                                    <div class="border rounded-3 shadow-sm d-inline-block p-5 bg-light text-muted text-center">
+                                        <i class="ni ni-image text-secondary" style="font-size: 2rem;"></i>
+                                        <p class="mt-2 mb-0">No image available</p>
+                                    </div>
+                                @endif
 
-                            {{-- Menu Image --}}
-                            @if($menu->url_food)
-                                <img src="{{ asset($menu->url_food) }}"
-                                     alt="{{ $menu->name }}"
-                                     class="card-img rounded-top"
-                                     style="max-height: 250px; object-fit: cover; width: 100%;">
-                            @else
-                                <div class="border rounded-3 shadow-sm d-inline-block p-5 bg-light text-muted text-center">
-                                    <i class="ni ni-image text-secondary" style="font-size: 2rem;"></i>
-                                    <p class="mt-2 mb-0">No image available</p>
-                                </div>
-                            @endif
+                                {{-- Menu Details --}}
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="fw-bold">{{ $menu->name }}</h6>
+                                    <p class="text-muted small mb-2">{{ $menu->description }}</p>
 
-                            {{-- Menu Details --}}
-                            <div class="card-body d-flex flex-column">
-                                <h6 class="fw-bold">{{ $menu->name }}</h6>
-                                <p class="text-muted small mb-2">{{ $menu->description }}</p>
+                                    {{-- Inline remark input for MASAKAN PANAS --}}
+                                    @if ($showRemarkModal && $selectedMenu && $selectedMenu->id === $menu->id && $menu->category === 'MASAKAN PANAS')
+                                        <textarea wire:model="remark" class="form-control mb-2" rows="2"
+                                                  placeholder="Add remark (optional)..."></textarea>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-success flex-fill" wire:click="confirmAddRemark">
+                                                Confirm Add
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary flex-fill"
+                                                    wire:click="$set('showRemarkModal', false)">
+                                                Cancel
+                                            </button>
+                                        </div>
 
-                                <div class="mt-auto d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold text-dark">RM {{ number_format($menu->price, 2) }}</span>
+                                        {{-- Inline drink selector for RTE SET COMBO --}}
+                                    @elseif ($showDrinkModal && $selectedMenu && $selectedMenu->id === $menu->id && $menu->category === 'RTE SET COMBO + SOFT DRINKS (16 OZ)')
+                                        <select wire:model="selectedDrink" class="form-select mb-2">
+                                            <option value="">-- Choose a drink --</option>
+                                            @foreach($softDrinks as $drink)
+                                                <option value="{{ $drink->name }}">{{ $drink->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-success flex-fill"
+                                                    wire:click="confirmSelectDrink"
+                                                    @if(!$selectedDrink) disabled @endif>
+                                                Confirm Add
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary flex-fill"
+                                                    wire:click="$set('showDrinkModal', false)">
+                                                Cancel
+                                            </button>
+                                        </div>
 
-                                    <button wire:click="addToCart({{ $menu->id }})"
-                                            class="btn btn-sm btn-primary"
-                                            @if(!$menu->avail_status) disabled @endif>
-                                        <i class="ni ni-fat-add"></i> Add
-                                    </button>
+                                    @else
+                                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold text-dark">RM {{ number_format($menu->price, 2) }}</span>
+
+                                            <button wire:click="addToCart({{ $menu->id }})"
+                                                    class="btn btn-sm btn-primary"
+                                                    @if(!$menu->avail_status) disabled @endif>
+                                                <i class="ni ni-fat-add"></i> Add
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
 
-    {{-- Floating Cart Button --}}
-    <a href="{{ route('guest.cart') }}"
-       class="btn btn-primary position-fixed rounded-circle shadow-lg"
-       style="bottom: 20px; right: 20px; width: 60px; height: 60px;">
-        <i class="ni ni-cart text-white fs-4"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ $cartCount }}
-        </span>
-    </a>
-</div>
+        {{-- Floating Cart Button --}}
+        <a href="{{ route('guest.cart') }}"
+           class="btn btn-primary position-fixed rounded-circle shadow-lg"
+           style="bottom: 20px; right: 20px; width: 60px; height: 60px;">
+            <i class="ni ni-cart text-white fs-4"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ $cartCount }}
+            </span>
+        </a>
+    </div>
 
-@push('js')
-    <script>
-        document.addEventListener('livewire:load', () => {
-            Livewire.on('cart-added', event => {
-                alert(event.message);
+    @push('js')
+        <script>
+            document.addEventListener('livewire:load', () => {
+                Livewire.on('cart-added', event => {
+                    alert(event.message);
+                });
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
+</div>

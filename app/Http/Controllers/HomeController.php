@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
+use App\Models\Menu;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +26,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('pages.dashboard');
+        return view('pages.dashboard', [
+            'ordersCount' => Order::count(),
+            'menusAvailable' => Menu::where('avail_status', 1)->count(),
+            'bookingsCount' => Booking::count(),
+        ]);
     }
 }

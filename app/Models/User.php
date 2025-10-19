@@ -19,15 +19,15 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
-        'firstname',
-        'lastname',
+        'name',
         'email',
         'password',
         'address',
         'city',
         'country',
         'postal',
-        'about'
+        'about',
+        'role'
     ];
 
     /**
@@ -59,4 +59,11 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
+    // Check if user has a specific role
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
 }

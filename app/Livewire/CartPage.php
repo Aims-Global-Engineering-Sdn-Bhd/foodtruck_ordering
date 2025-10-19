@@ -17,31 +17,38 @@ class CartPage extends Component
         $this->cart = session()->get('cart', []);
     }
 
-    public function increment($menuId)
+    public function increment($itemId)
     {
-        if (isset($this->cart[$menuId])) {
-            $this->cart[$menuId]['quantity'] += 1;
+        if (isset($this->cart[$itemId])) {
+            $this->cart[$itemId]['quantity'] += 1;
             session()->put('cart', $this->cart);
         }
     }
 
-    public function decrement($menuId)
+    public function decrement($itemId)
     {
-        if (isset($this->cart[$menuId])) {
-            $this->cart[$menuId]['quantity'] -= 1;
+        if (isset($this->cart[$itemId])) {
+            $this->cart[$itemId]['quantity'] -= 1;
 
-            if ($this->cart[$menuId]['quantity'] <= 0) {
-                unset($this->cart[$menuId]);
+            if ($this->cart[$itemId]['quantity'] <= 0) {
+                unset($this->cart[$itemId]);
             }
 
             session()->put('cart', $this->cart);
         }
     }
 
-    public function remove($menuId)
+    public function remove($itemId)
     {
-        if (isset($this->cart[$menuId])) {
-            unset($this->cart[$menuId]);
+        if (isset($this->cart[$itemId])) {
+            unset($this->cart[$itemId]);
+            session()->put('cart', $this->cart);
+        }
+    }
+
+    public function updateItemRemark($itemId, $remark){
+        if(isset($this->cart[$itemId])){
+            $this->cart[$itemId]['remark'] = $remark;
             session()->put('cart', $this->cart);
         }
     }
@@ -69,13 +76,14 @@ class CartPage extends Component
             'status' => 0,
         ]);
 
-        // ✅ Save booking items
+        // Save booking items
         foreach ($this->cart as $item) {
             Booking::create([
                 'menu_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'subtotal' => $item['price'] * $item['quantity'],
                 'order_id' => $order->id,
+                'remark'=>$item['remark'] ?? null,
             ]);
         }
 

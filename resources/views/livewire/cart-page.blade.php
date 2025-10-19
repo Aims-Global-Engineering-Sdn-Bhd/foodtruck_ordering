@@ -15,33 +15,42 @@
         <div class="row g-3">
 
             {{-- Cart Items --}}
-            @foreach($cart as $menuId => $item)
+            @foreach($cart as $itemId => $item)
                 <div class="col-12">
                     <div class="card border-0 shadow-sm p-3 d-flex flex-column flex-md-row align-items-center">
 
                         {{-- Item Details --}}
                         <div class="flex-grow-1 text-center text-md-start">
                             <h6 class="fw-bold text-dark mb-1">{{ $item['name'] }}</h6>
-                            <p class="text-muted small mb-2">RM {{ number_format($item['price'], 2) }} / unit</p>
+                            <p class="text-muted small mb-2">
+                                RM {{ number_format($item['price'], 2) }} / unit
+                            </p>
+
+                            {{-- Show remark if available --}}
+                            @if (!empty($item['remark']))
+                                <small class="text-secondary fst-italic d-block mb-2">
+                                    Remark: {{ $item['remark'] }}
+                                </small>
+                            @endif
 
                             {{-- Quantity Controls --}}
                             <div class="d-flex justify-content-center justify-content-md-start align-items-center gap-2">
-                                <button wire:click="decrement('{{ $menuId }}')"
+                                <button wire:click="decrement('{{ $itemId }}')"
                                         class="btn btn-primary rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                                         stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus">
+                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M5 12h14"/>
                                     </svg>
                                 </button>
 
                                 <span class="fw-bold px-2">{{ $item['quantity'] }}</span>
 
-                                <button wire:click="increment('{{ $menuId }}')"
+                                <button wire:click="increment('{{ $itemId }}')"
                                         class="btn btn-primary rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                                         stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M5 12h14"/>
                                         <path d="M12 5v14"/>
                                     </svg>
@@ -54,11 +63,11 @@
                             <p class="fw-bold text-dark mb-1">
                                 RM {{ number_format($item['price'] * $item['quantity'], 2) }}
                             </p>
-                            <button wire:click="remove('{{ $menuId }}')"
+                            <button wire:click="remove('{{ $itemId }}')"
                                     class="btn btn-sm btn-danger rounded-pill shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                     stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M18 6 6 18"/>
                                     <path d="m6 6 12 12"/>
                                 </svg>

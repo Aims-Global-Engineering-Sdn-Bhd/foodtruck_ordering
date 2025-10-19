@@ -9,6 +9,20 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
+    protected $categories = [
+        "ALA CARTE (STANDARD)",
+        "ALA CARTE (SIGNATURE)",
+        "RTE SET COMBO + SOFT DRINKS (16 OZ)",
+        "MASAKAN PANAS",
+        "ALA CARTE LOKCING",
+        "ALA CARTE WESTERN (SIDE DISH)",
+        "BEVERAGE",
+        "SOFT DRINKS",
+        "DRINKS",
+        "BEST SELLER",
+        "SIDE DISH",
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -25,21 +39,10 @@ class MenuController extends Controller
      */
     public function create()
     {
-        $categories = [
-            "ALA CARTE (STANDARD)",
-            "ALA CARTE (SIGNATURE)",
-            "RTE SET COMBO + SOFT DRINKS (16 OZ)",
-            "MASAKAN PANAS",
-            "ALA CARTE LOKCING",
-            "ALA CARTE WESTERN (SIDE DISH)",
-            "BEVERAGE",
-            "DRINKS (SOFT DRINKS)",
-            "DRINKS (HOT DRINKS)",
-            "BEST SELLER",
-        ];
 
-
-        return view('menu.create', compact('categories'));
+        return view('menu.create',  [
+            'categories' => $this->categories
+        ]);
     }
 
     /**
@@ -93,7 +96,10 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        return view('menu.edit', compact('menu'));
+        return view('menu.edit',  [
+            'menu' => $menu,
+            'categories' => $this->categories
+        ]);
     }
 
     /**

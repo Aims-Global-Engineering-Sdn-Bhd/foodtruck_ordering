@@ -12,6 +12,7 @@ class Booking extends Model
         'price',
         'quantity',
         'subtotal',
+        'remark'
     ];
 
     public function menu()

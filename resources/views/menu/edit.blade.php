@@ -54,9 +54,17 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
-                                    <input type="text" name="category" id="category" class="form-control"
-                                           value="{{ $menu->category }}" required>
+                                    <select name="category" id="category" class="form-select" required>
+                                        <option value="">-- Select Category --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category }}"
+                                                {{ old('category', $menu->category ?? '') == $category ? 'selected' : '' }}>
+                                                {{ $category }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
+
 
                                 <div class="col-md-6 mb-3">
                                     <label for="avail_status" class="form-label">Availability <span class="text-danger">*</span></label>

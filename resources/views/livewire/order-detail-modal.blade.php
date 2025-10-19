@@ -55,7 +55,15 @@
                             @foreach($items as $item)
                                 @php $total += $item['price'] * $item['quantity']; @endphp
                                 <tr>
-                                    <td class="fw-semibold">{{ $item['menu_name'] }}</td>
+                                    <td class="fw-semibold">
+                                        {{ $item['menu_name'] }}
+                                        @if(!empty($item['remark']))
+                                            <p class="text-muted small mt-1 mb-0">
+                                                <i class="ni ni-chat-round me-1 text-primary"></i>
+                                                <strong>Remark:</strong> {{ $item['remark'] }}
+                                            </p>
+                                        @endif
+                                    </td>
                                     <td class="text-center">{{ $item['quantity'] }}</td>
                                     <td class="text-end">{{ number_format($item['price'], 2) }}</td>
                                 </tr>

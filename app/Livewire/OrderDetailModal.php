@@ -22,6 +22,7 @@ class OrderDetailModal extends Component
                     'menu_name' => $b->menu->name,
                     'quantity' => $b->quantity,
                     'price' => $b->menu->price,
+                    'remark'=> $b->remark,
                 ];
             })->toArray();
         }
