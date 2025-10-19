@@ -3,9 +3,12 @@
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\RoleMiddleware;
 use App\Livewire\OrderReceiver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Route::aliasMiddleware('role', RoleMiddleware::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -51,19 +54,32 @@ Route::get('/', function () {return redirect('/dashboard');})->middleware('auth'
 	Route::post('/change-password', [ChangePassword::class, 'update'])->name('change.perform');
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
-	Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
-	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
-	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
-	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
-	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+// Routes for all authenticated users
+Route::middleware(['auth'])->group(function () {
+    // Dashboard / Profile
+    Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+    Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-	//User management
+    // Foodtruck section (order & menu quick toggle)
+    Route::get('/cashier/orders', function() {
+        return view('cashier.order');
+    })->name('cashier.order');
+    Route::get('/cashier/menus', function() {
+        return view('cashier.menu');
+    })->name('cashier.menu');
+});
+
+// Admin only
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // User management
     Route::resource('users', UserController::class);
+});
 
-	//Route for admin's side start here
-    //Route for Menu
+// Admin + User
+Route::middleware(['auth', 'role:admin,user'])->group(function () {
+    // Menu management
     Route::get('/menu-list', [MenuController::class, 'index'])->name('menu.index');
     Route::get('/menu-add', [MenuController::class, 'create'])->name('menu.create');
     Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
@@ -72,15 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/menu/{menu}', [MenuController::class, 'update'])->name('menu.update');
     Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
 
-    //Route for Order (Admin)
+    // Completed Orders
     Route::get('/order-list', [OrderController::class ,'index'])->name('order.index');
     Route::get('/order-list/{id}', [OrderController::class, 'show'])->name('order.show');
-
-    //Route for Order (Cashier)
-    Route::get('/cashier/orders', function() {
-        return view('cashier.order');
-    })->name('cashier.order');
-    Route::get('/cashier/menus', function() {
-        return view('cashier.menu');
-    })->name('cashier.menu');
 });
