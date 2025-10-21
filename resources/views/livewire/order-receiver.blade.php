@@ -1,4 +1,7 @@
 <div class="container-fluid py-4">
+    <div class="alert alert-info text-center fw-bold mb-3 rounded">
+        ⚠️ Keep this page active to receive new order sound notifications!
+    </div>
     <div class="card shadow-sm border-0">
         <div class="card-header bg-transparent border-0">
         </div>
@@ -18,7 +21,7 @@
                         <div class="card card-frame mb-3 border-0 shadow-sm">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                                 <div>
-                                    <h6 class="fw-bold mb-1">Order #{{ $order->id }}</h6>
+                                    <h6 class="fw-bold mb-1">Order #{{ $order->order_id }}</h6>
                                     <p class="mb-1 text-sm text-muted">
                                         <i class="ni ni-single-02"></i> {{ $order->customer_name }}
                                     </p>

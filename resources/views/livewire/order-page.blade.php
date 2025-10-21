@@ -3,7 +3,7 @@
         {{-- Order Header --}}
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
             <div>
-                <h3 class="text-primary mb-1 fw-bold">Order #{{ $order->id }}</h3>
+                <h3 class="text-primary mb-1 fw-bold">Order #{{ $order->order_id }}</h3>
                 <p class="text-muted mb-0"><strong>Customer:</strong> {{ $order->customer_name }}</p>
 
                 @if($order->pickup_time)
