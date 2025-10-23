@@ -58,7 +58,9 @@
                                         <textarea wire:model="remark" class="form-control mb-2" rows="2"
                                                   placeholder="Add remark (optional)..."></textarea>
                                         <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-success flex-fill" wire:click="confirmAddRemark">
+                                            <button class="btn btn-sm btn-success flex-fill"
+                                                    @if(!$menu->avail_status) disabled @endif
+                                                    wire:click="confirmAddRemark">
                                                 Confirm Add
                                             </button>
                                             <button class="btn btn-sm btn-outline-secondary flex-fill"
