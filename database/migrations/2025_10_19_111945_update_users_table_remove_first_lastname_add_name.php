@@ -26,25 +26,9 @@ return new class extends Migration
         // Add new column if it does not exist
         if (!Schema::hasColumn('users', 'name')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->string('name')->after('id');
+                $table->string('name')->nullable()->after('id');
             });
         }
-
-
-        /*Schema::table('users', function (Blueprint $table) {
-            // Remove old columns if they exist
-            if (Schema::hasColumn('users', 'firstname')) {
-                $table->dropColumn('firstname');
-            }
-            if (Schema::hasColumn('users', 'lastname')) {
-                $table->dropColumn('lastname');
-            }
-
-            // Add new name column if not already exist
-            if (!Schema::hasColumn('users', 'name')) {
-                $table->string('name')->after('id');
-            }
-        });*/
     }
 
     /**
@@ -63,3 +47,19 @@ return new class extends Migration
         });
     }
 };
+
+
+/*Schema::table('users', function (Blueprint $table) {
+            // Remove old columns if they exist
+            if (Schema::hasColumn('users', 'firstname')) {
+                $table->dropColumn('firstname');
+            }
+            if (Schema::hasColumn('users', 'lastname')) {
+                $table->dropColumn('lastname');
+            }
+
+            // Add new name column if not already exist
+            if (!Schema::hasColumn('users', 'name')) {
+                $table->string('name')->after('id');
+            }
+        });*/
