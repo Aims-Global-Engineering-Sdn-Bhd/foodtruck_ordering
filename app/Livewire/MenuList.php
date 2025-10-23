@@ -27,7 +27,11 @@ class MenuList extends Component
     {
         // Load menus and categories
         $this->loadMenus();
-        $this->categories = Menu::select('category')->distinct()->pluck('category');
+        $this->categories = Menu::select('category')
+            ->distinct()
+            ->orderBy('category', 'asc')
+            ->pluck('category');
+
         $this->softDrinks = Menu::where('category', 'SOFT DRINKS')
             ->where('avail_status', 1)
             ->get();

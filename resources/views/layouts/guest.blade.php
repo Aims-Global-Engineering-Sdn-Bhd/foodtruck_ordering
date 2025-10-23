@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Foodtruck Ordering System')</title>
+    <title>@yield('title', 'TKCafe')</title>
 
     <!-- Fonts and icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -27,18 +27,54 @@
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
     @stack('css')
     @livewireStyles
+
+    <style>
+        /* --- Brand T styling --- */
+        .t-style {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 28px;
+            background: linear-gradient(180deg, #d4af37 0%, #8b6b23 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Navbar & Footer Coffee Theme --- */
+        .navbar-coffee {
+            background-color: #4e342e;
+        }
+
+        .navbar-coffee .nav-link,
+        .navbar-coffee .navbar-brand {
+            color: #f5f5f5 !important;
+        }
+
+        .navbar-coffee .nav-link:hover {
+            color: #ffd54f !important;
+        }
+
+        footer.footer-coffee {
+            background-color: #4e342e;
+            color: #f5f5f5;
+        }
+
+        footer.footer-coffee small {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light">
 
-{{-- Simple guest navbar --}}
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+{{-- Navbar --}}
+<nav class="navbar navbar-expand-lg navbar-coffee shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{{ route('menu.list') }}">
             <span class="t-style">T</span>KCafe
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarGuest"
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarGuest"
                 aria-controls="navbarGuest" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -58,8 +94,8 @@
 </main>
 
 {{-- Footer --}}
-<footer class="bg-white text-center py-3 mt-auto shadow-sm">
-    <small>© {{ date('Y') }} | Developed by Juqiey</small>
+<footer class="footer-coffee text-center py-3 mt-auto shadow-sm">
+    <small>© {{ date('Y') }} | Developed by IT Team | AIMS Global</small>
 </footer>
 
 <!-- Core JS Files -->
@@ -79,11 +115,10 @@
 @stack('js')
 @livewireScripts
 
-<!-- ✅ SweetAlert2 Toast Notifications -->
+<!-- SweetAlert2 Toast -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('livewire:initialized', () => {
-        // Reusable SweetAlert Toast
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -95,52 +130,13 @@
             },
         });
 
-        // Success message (order placed)
-        Livewire.on('order-placed', event => {
-            Toast.fire({
-                icon: 'success',
-                title: event.message || 'Order placed successfully!'
-            });
+        Livewire.on('order-placed', e => Toast.fire({ icon: 'success', title: e.message || 'Order placed successfully!' }));
+        Livewire.on('cart-error', e => Toast.fire({ icon: 'error', title: e.message || 'Something went wrong.' }));
+        Livewire.on('cart-added', e => Toast.fire({ icon: 'success', title: e.message || 'Item added to cart!' }));
+        Livewire.on('order-updated', e => {
+            Swal.fire({ icon: 'success', title: 'Success!', text: e.message, timer: 2000, showConfirmButton: false });
         });
-
-        // Error message (missing input / empty cart)
-        Livewire.on('cart-error', event => {
-            Toast.fire({
-                icon: 'error',
-                title: event.message || 'Something went wrong.'
-            });
-        });
-
-        Livewire.on('cart-added', event => {
-            Toast.fire({
-                icon: 'success',
-                title: event.message || 'Item added to cart!'
-            });
-        });
-
-        // When the customer pickup the food
-        Livewire.on('order-updated', event => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: event.message,
-                timer: 2000,
-                showConfirmButton: false,
-            });
-        });
-
     });
 </script>
-<style>
-    .t-style {
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        font-weight: bold;
-        font-size: 28px;
-        background: linear-gradient(180deg, #d4af37 0%, #8b6b23 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-</style>
 </body>
 </html>
