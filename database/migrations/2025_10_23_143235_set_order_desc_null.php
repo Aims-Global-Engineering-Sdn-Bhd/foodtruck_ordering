@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->string('description')->nullable();
-            $table->string('remarks')->nullable();
+            $table->string('description')->nullable()->change();
+            $table->string('remarks')->nullable()->change();
         });
     }
 
