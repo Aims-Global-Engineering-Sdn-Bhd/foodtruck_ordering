@@ -31,8 +31,6 @@ Route::get('/test-session', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
