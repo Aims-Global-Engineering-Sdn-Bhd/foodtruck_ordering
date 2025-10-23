@@ -26,7 +26,7 @@ return new class extends Migration
         // Add new column if it does not exist
         if (!Schema::hasColumn('users', 'name')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->string('name')->nullable()->after('id');
+                $table->string('name')->after('id');
             });
         }
     }
