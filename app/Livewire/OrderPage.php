@@ -13,7 +13,10 @@ class OrderPage extends Component
     public $bookings;
     public $progress = 0;
 
-    protected $listeners = ['refreshStatus' => 'loadOrder'];
+    protected $listeners = [
+        'refreshStatus' => 'loadOrder',
+        'cancelOrder' => 'cancelOrder'
+    ];
 
     public function mount($orderId){
         $this->orderId = $orderId;
@@ -32,8 +35,19 @@ class OrderPage extends Component
             case 1: $this->progress = 50; break; // Preparing
             case 2: $this->progress = 80; break; // Ready
             case 3: $this->progress = 100; break; // Completed
+            case 4: $this->progress = 100; break; // Cancelled
             default: $this->progress = 0;
         }
+    }
+
+    public function cancelOrder(){
+        $this->order->update([
+            'status'=>4,
+        ]);
+
+        $this->loadOrder();
+
+        $this->dispatch('order-updated',['message'=>'Your order is cancelled!']);
     }
 
     public function completeOrder(){

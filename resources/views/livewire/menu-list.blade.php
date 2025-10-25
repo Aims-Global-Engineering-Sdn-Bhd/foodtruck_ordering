@@ -28,19 +28,23 @@
                     @foreach($items as $menu)
                         <div class="col-md-4 col-sm-6">
                             <div class="card shadow-sm border-0 h-100 {{ $menu->avail_status ? '' : 'opacity-50 position-relative' }}">
-                                {{-- Out of Stock Overlay --}}
-                                @if(!$menu->avail_status)
-                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger bg-opacity-75 text-white px-3 py-1 rounded">
-                                        <span>Out Of Stock</span>
-                                    </div>
-                                @endif
-
                                 {{-- Menu Image --}}
                                 @if($menu->url_food)
-                                    <img src="{{ asset($menu->url_food) }}"
-                                         alt="{{ $menu->name }}"
-                                         class="card-img rounded-top"
-                                         style="max-height: 250px; object-fit: cover; width: 100%;">
+                                    <div class="position-relative">
+                                        <img src="{{ asset($menu->url_food) }}"
+                                             alt="{{ $menu->name }}"
+                                             class="card-img rounded-top"
+                                             style="max-height: 250px; object-fit: cover; width: 100%;">
+
+                                        {{-- Red overlay for unavailable --}}
+                                        @if(!$menu['avail_status'])
+                                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-danger bg-opacity-50 rounded-top">
+                                                    <span class="text-white fw-bold fs-6" style="transform: rotate(-20deg);">
+                                                        UNAVAILABLE
+                                                    </span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @else
                                     <div class="border rounded-3 shadow-sm d-inline-block p-5 bg-light text-muted text-center">
                                         <i class="ni ni-image text-secondary" style="font-size: 2rem;"></i>

@@ -17,6 +17,7 @@
                 @elseif($order->status == 1) bg-warning
                 @elseif($order->status == 2) bg-info
                 @elseif($order->status == 3) bg-success
+                @elseif($order->status == 4) bg-danger
                 @endif
                 fs-6 px-3 py-2 rounded-pill mt-3 mt-md-0">
                 @switch($order->status)
@@ -24,6 +25,7 @@
                     @case(1) 🔥 Preparing Order @break
                     @case(2) 🚗 Ready to Pickup @break
                     @case(3) ✅ Completed @break
+                    @case(4) Cancelled @break
                     @default Pending
                 @endswitch
             </span>
@@ -46,7 +48,8 @@
             <div class="progress" style="height: 25px;">
                 <div
                     class="progress-bar progress-bar-striped progress-bar-animated
-                        @if($order->status == 2 || $order->status == 3) bg-success @endif"
+                        @if($order->status == 2 || $order->status == 3) bg-success @endif
+                        @if($order->status == 4) bg-danger @endif"
                     role="progressbar"
                     style="width: {{ $progress }}%;"
                 >
@@ -82,6 +85,10 @@
                         <td class="text-end">{{ number_format($item->subtotal, 2) }}</td>
                     </tr>
                 @endforeach
+                    <tr>
+                        <td colspan="2" class="text-end fw-bold">Total Amount (RM):</td>
+                        <td class="text-end fw-bold">{{ number_format($order->total_amount, 2) }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -111,6 +118,10 @@
                 <div class="alert alert-success text-white mt-3 mb-0 rounded-pill fw-semibold">
                     ✅ Order completed and picked up!
                 </div>
+            @elseif($order->status ==0)
+                <button id="cancelOrderBtn" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
+                   Cancel Order
+                </button>
             @endif
         </div>
     </div>
@@ -118,9 +129,42 @@
     {{-- Auto-refresh every 5 seconds --}}
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Auto-refresh
             setInterval(() => {
                 Livewire.dispatch('refreshStatus');
             }, 5000);
+
+            // SweetAlert confirmation for cancelling order
+            const cancelBtn = document.getElementById('cancelOrderBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    Swal.fire({
+                        title: 'Cancel this order?',
+                        text: "This action cannot be undone once confirmed.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, cancel it',
+                        cancelButtonText: 'No, keep it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Livewire.dispatch('cancelOrder');
+                        }
+                    });
+                });
+            }
+
+            // Listen for order-updated event from Livewire
+            Livewire.on('order-updated', (data) => {
+                Swal.fire({
+                    title: '✅ Success',
+                    text: data.message,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            });
         });
     </script>
 </div>

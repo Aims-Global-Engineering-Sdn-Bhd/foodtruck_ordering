@@ -9,7 +9,10 @@ class OrderReceiver extends Component
 {
     public $newOrders = [];
     public $inProgressOrders = [];
-    protected $listeners = ['orderUpdated' => 'checkForNewOrders'];
+    protected $listeners = [
+        'orderUpdated' => 'checkForNewOrders',
+        'cancelOrder' => 'cancelOrder'
+    ];
 
     public $lastOrderCount = 0; // track previously known new orders
 
@@ -36,6 +39,22 @@ class OrderReceiver extends Component
 
         $this->lastOrderCount = $currentCount;
         $this->loadOrders();
+    }
+
+    public function cancelOrder($orderId){
+        $order = Order::find($orderId);
+
+        if($order){
+            $order->status = 4;
+            $order->save();
+
+            $this->dispatch('swal:success', [
+                'title' => 'Payment Completed!',
+                'text' => 'Order moved to In Progress.',
+            ]);
+
+            $this->loadOrders();
+        }
     }
 
     public function completePayment($orderId)

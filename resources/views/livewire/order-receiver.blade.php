@@ -1,4 +1,4 @@
-<div class="container-fluid py-4">
+<div class="container">
     <div class="alert alert-info text-center fw-bold mb-3 rounded">
         ⚠️ Keep this page active to receive new order sound notifications!
     </div>
@@ -9,7 +9,7 @@
         <div class="card-body pt-0">
             <div class="row">
                 {{-- 🆕 NEW ORDERS --}}
-                <div class="col-md-6 border-end">
+                <div class="col-md-6 border-end border-3 border-secondary">
                     <div class="d-flex align-items-center mb-3">
                         <h5 class="text-danger fw-bold mb-0">
                             🆕 New Orders
@@ -18,7 +18,7 @@
                     </div>
 
                     @forelse($newOrders as $order)
-                        <div class="card card-frame mb-3 border-0 shadow-sm">
+                        <div class="card card-frame mb-3 border-0 shadow-sm bg-gradient-light">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                                 <div>
                                     <h6 class="fw-bold mb-1">Order #{{ $order->order_id }}</h6>
@@ -31,7 +31,7 @@
                                     </p>
                                 </div>
 
-                                <div class="mt-3 mt-md-0">
+                                <div class="mt-4 mt-md-0">
                                     <button class="btn btn-sm btn-outline-primary me-2"
                                             wire:click="$dispatch('loadOrderDetail', { orderId: {{ $order->id }} })"
                                             data-bs-toggle="modal"
@@ -39,10 +39,16 @@
                                         <i class="ni ni-zoom-split-in"></i> View
                                     </button>
 
-                                    <button class="btn btn-sm btn-success"
+                                    <button class="btn btn-sm btn-success me-2"
                                             wire:click="completePayment({{ $order->id }})">
                                         <i class="ni ni-check-bold"></i> Payment Done
                                     </button>
+
+                                    <button class="btn btn-sm btn-danger"
+                                            wire:click="$dispatch('confirmCancelOrder', { orderId: {{ $order->id }} })">
+                                        <i class="ni ni-fat-remove"></i> Cancel
+                                    </button>
+
                                 </div>
                             </div>
                         </div>
@@ -130,6 +136,24 @@
             const audio = new Audio('/sounds/new-order.mp3');
             audio.play();
         });
+
+        Livewire.on('confirmCancelOrder', (data) => {
+            Swal.fire({
+                title: 'Cancel this order?',
+                text: "This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatch('cancelOrder', { orderId: data.orderId });
+                }
+            });
+        });
+
     });
 
     // 🧠 Poll every 10 seconds for new orders

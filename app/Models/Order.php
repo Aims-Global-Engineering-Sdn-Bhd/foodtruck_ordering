@@ -14,7 +14,7 @@ class Order extends Model
         'pickup_time',
         'remarks',
         'customer_name',
-        'order_id'
+        'order_id',
     ];
 
     public function bookings()
